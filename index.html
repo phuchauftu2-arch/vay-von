@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tính nhanh số tiền vay được – Quảng Ngãi</title>
+<meta name="description" content="Nhập thu nhập và tài sản, biết ngay số tiền vay được và số tiền trả mỗi tháng.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --nen:#F3F6F2; --giay:#FFFFFF; --muc:#17221C; --phu:#5B6B62;
+    --lua:#1F5A3F; --lua-nhat:#E4EEE7; --nghe:#D9A126; --vien:#D3DDD6; --do:#B3261E;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--nen);color:var(--muc);
+    font-family:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    font-size:17px;line-height:1.55}
+  .khung{max-width:1040px;margin:0 auto;padding:28px 18px 60px}
+  header h1{font-size:clamp(28px,6vw,44px);line-height:1.12;font-weight:800;margin:0 0 10px;letter-spacing:-.01em;max-width:18ch}
+  header p{color:var(--phu);margin:0 0 26px;max-width:46ch}
+  .luoi{display:grid;gap:22px}
+  @media(min-width:880px){.luoi{grid-template-columns:1fr 1.05fr;align-items:start}
+    .ket-qua{position:sticky;top:18px}}
+  .phan{background:var(--giay);border:1px solid var(--vien);border-radius:14px;padding:22px}
+  .phan h2{font-size:19px;margin:0 0 16px;font-weight:600}
+  label{display:block;font-weight:500;margin:14px 0 6px}
+  .goi-y{font-size:14px;color:var(--phu);margin-top:4px;min-height:1.3em}
+  .o-nhap{position:relative}
+  .o-nhap input,select{width:100%;font:inherit;font-size:19px;padding:12px 64px 12px 14px;border:1.5px solid var(--vien);
+    border-radius:10px;background:#fff;color:var(--muc)}
+  select{padding-right:14px}
+  .o-nhap span{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--phu);font-size:15px}
+  input:focus,select:focus,button:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid var(--nghe);outline-offset:2px}
+  .hai-cot{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  details{margin-top:18px;border-top:1px dashed var(--vien);padding-top:12px}
+  summary{cursor:pointer;color:var(--lua);font-weight:500}
+  /* Kết quả: phần đáng nhớ nhất của trang */
+  .so-lon{background:var(--lua);color:#fff;border-radius:14px;padding:24px 22px 20px}
+  .so-lon .nhan{opacity:.85;font-size:16px}
+  .so-lon .tien{font-size:clamp(38px,9vw,58px);font-weight:800;line-height:1.05;margin:6px 0 4px;
+    font-variant-numeric:tabular-nums;color:#fff}
+  .so-lon .tien small{font-size:.42em;font-weight:600;color:var(--nghe);margin-left:6px}
+  .so-lon .vi-sao{font-size:15px;opacity:.92;margin:8px 0 0}
+  .thanh{height:10px;background:rgba(255,255,255,.18);border-radius:6px;margin-top:16px;overflow:hidden;display:flex}
+  .thanh i{display:block;height:100%}
+  .chu-thich{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;margin-top:8px;opacity:.9}
+  .chu-thich b{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+  .so-nho{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+  .so-nho div{background:var(--giay);border:1px solid var(--vien);border-radius:12px;padding:14px}
+  .so-nho p{margin:0;color:var(--phu);font-size:14px}
+  .so-nho strong{font-size:21px;font-variant-numeric:tabular-nums}
+  .canh-bao{background:#FDECEA;color:var(--do);border-radius:10px;padding:12px 14px;margin-top:14px;font-size:15px;display:none}
+  table{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+  th,td{padding:8px 6px;text-align:right;border-bottom:1px solid var(--vien)}
+  th:first-child,td:first-child{text-align:left}
+  th{color:var(--phu);font-weight:500}
+  .cuon{overflow-x:auto;margin-top:10px}
+  .lien-he{display:grid;gap:10px;margin-top:6px}
+  .nut{display:block;text-align:center;font:inherit;font-weight:600;font-size:17px;padding:14px;border-radius:10px;
+    text-decoration:none;border:0;cursor:pointer}
+  .nut-zalo{background:var(--nghe);color:#1b1400}
+  .nut-goi{background:var(--lua-nhat);color:var(--lua)}
+  .the-ten{display:flex;gap:14px;align-items:center;margin-bottom:12px}
+  .the-ten .chu-cai{width:52px;height:52px;border-radius:50%;background:var(--lua);color:#fff;display:grid;place-items:center;
+    font-weight:800;font-size:20px;flex:none}
+  .the-ten p{margin:0}
+  .the-ten .cv{color:var(--phu);font-size:15px}
+  .bao{font-size:14px;color:var(--phu);margin-top:8px;min-height:1.3em}
+  footer{color:var(--phu);font-size:13.5px;margin-top:26px;max-width:70ch}
+  @media(prefers-reduced-motion:no-preference){.so-lon .tien{transition:color .2s}}
+</style>
+</head>
+<body>
+<div class="khung">
+  <header>
+    <h1>Anh chị vay được bao nhiêu?</h1>
+    <p>Nhập thu nhập và tài sản, trang tự tính số tiền vay được và số tiền trả mỗi tháng. Không cần đăng ký, không lưu thông tin.</p>
+  </header>
+
+  <div class="luoi">
+    <!-- Cột nhập -->
+    <section class="phan" aria-labelledby="t-nhap">
+      <h2 id="t-nhap">Thông tin của anh chị</h2>
+
+      <label for="thuNhap">Thu nhập cả nhà mỗi tháng</label>
+      <div class="o-nhap"><input id="thuNhap" inputmode="numeric" autocomplete="off" value="20.000.000"><span>đồng</span></div>
+      <div class="goi-y" data-cho="thuNhap"></div>
+
+      <label for="chiTieu">Chi tiêu sinh hoạt mỗi tháng</label>
+      <div class="o-nhap"><input id="chiTieu" inputmode="numeric" autocomplete="off" value="8.000.000"><span>đồng</span></div>
+      <div class="goi-y" data-cho="chiTieu"></div>
+
+      <label for="noCu">Đang trả nợ chỗ khác mỗi tháng</label>
+      <div class="o-nhap"><input id="noCu" inputmode="numeric" autocomplete="off" value="0"><span>đồng</span></div>
+      <div class="goi-y" data-cho="noCu"></div>
+
+      <label for="taiSan">Giá trị nhà, đất dùng để thế chấp</label>
+      <div class="o-nhap"><input id="taiSan" inputmode="numeric" autocomplete="off" value="1.500.000.000"><span>đồng</span></div>
+      <div class="goi-y" data-cho="taiSan"></div>
+
+      <div class="hai-cot">
+        <div>
+          <label for="laiSuat">Lãi suất</label>
+          <div class="o-nhap"><input id="laiSuat" inputmode="decimal" autocomplete="off" value="7"><span>%/năm</span></div>
+        </div>
+        <div>
+          <label for="thoiHan">Thời hạn vay</label>
+          <div class="o-nhap"><input id="thoiHan" inputmode="numeric" autocomplete="off" value="10"><span>năm</span></div>
+        </div>
+      </div>
+      <div class="goi-y">Lãi suất trên chỉ là ví dụ. Hỏi cán bộ tín dụng để biết mức đang áp dụng.</div>
+
+      <label for="cachTra">Cách trả</label>
+      <select id="cachTra">
+        <option value="giam">Gốc đều, lãi giảm dần</option>
+        <option value="deu">Trả đều mỗi tháng</option>
+      </select>
+
+      <details>
+        <summary>Chỉnh mức tính (dành cho người hiểu rõ)</summary>
+        <label for="tyLeTra">Tiền trả nợ tối đa so với thu nhập</label>
+        <div class="o-nhap"><input id="tyLeTra" inputmode="numeric" value="50"><span>%</span></div>
+        <label for="tyLeTS">Số tiền vay tối đa so với giá trị tài sản</label>
+        <div class="o-nhap"><input id="tyLeTS" inputmode="numeric" value="70"><span>%</span></div>
+        <div class="goi-y">Đây là mức tham khảo để ước tính. Mức thực tế do ngân hàng thẩm định từng hồ sơ.</div>
+      </details>
+    </section>
+
+    <!-- Cột kết quả -->
+    <section class="ket-qua" aria-live="polite" aria-labelledby="t-kq">
+      <div class="so-lon">
+        <div class="nhan" id="t-kq">Số tiền anh chị có thể vay khoảng</div>
+        <div class="tien" id="vayDuoc">0<small>đồng</small></div>
+        <p class="vi-sao" id="viSao"></p>
+        <div class="thanh" aria-hidden="true"><i id="vChi" style="background:#9DB8A8"></i><i id="vNo" style="background:#E8B4A0"></i><i id="vTra" style="background:var(--nghe)"></i></div>
+        <div class="chu-thich">
+          <span><b style="background:#9DB8A8"></b>Chi tiêu</span>
+          <span><b style="background:#E8B4A0"></b>Nợ cũ</span>
+          <span><b style="background:var(--nghe)"></b>Trả khoản vay mới</span>
+        </div>
+      </div>
+
+      <div class="so-nho">
+        <div><p id="nhanThang1">Tháng đầu trả</p><strong id="traThang">0</strong></div>
+        <div><p>Tổng tiền lãi cả kỳ</p><strong id="tongLai">0</strong></div>
+      </div>
+      <div class="canh-bao" id="canhBao"></div>
+
+      <div class="phan" style="margin-top:14px">
+        <h2>Lịch trả nợ theo năm</h2>
+        <div class="cuon"><table>
+          <thead><tr><th>Năm</th><th>Trả gốc</th><th>Trả lãi</th><th>Còn nợ</th></tr></thead>
+          <tbody id="lich"></tbody>
+        </table></div>
+      </div>
+
+      <div class="phan" style="margin-top:14px">
+        <div class="the-ten">
+          <div class="chu-cai" id="chuCai">H</div>
+          <div><p><strong id="tenCB"></strong></p><p class="cv" id="chucDanh"></p></div>
+        </div>
+        <p style="margin:0 0 12px">Muốn biết chính xác hồ sơ của mình vay được bao nhiêu, gửi kết quả này cho em qua Zalo.</p>
+        <div class="lien-he">
+          <button class="nut nut-zalo" id="nutZalo" type="button">Gửi kết quả qua Zalo</button>
+          <a class="nut nut-goi" id="nutGoi" href="#">Gọi điện</a>
+        </div>
+        <div class="bao" id="bao"></div>
+      </div>
+    </section>
+  </div>
+
+  <footer id="chanTrang">
+    Kết quả chỉ để tham khảo, không phải cam kết cho vay. Số tiền, lãi suất và thời hạn thực tế do ngân hàng quyết định sau khi thẩm định hồ sơ.
+    Trang không lưu và không gửi đi bất kỳ thông tin nào anh chị nhập.
+  </footer>
+</div>
+
+<script>
+/* ===== PHẦN ANH SỬA: thông tin liên hệ ===== */
+const CAU_HINH = {
+  ten: "Phạm Phúc Hậu",
+  chucDanh: "Cán bộ tín dụng khách hàng cá nhân – Quảng Ngãi",
+  dienThoai: "0983832977",   // số Zalo và số gọi
+};
+/* =========================================== */
+
+const $ = id => document.getElementById(id);
+const docSo = id => Number(String($(id).value).replace(/[^\d,]/g, "").replace(",", ".")) || 0;
+const vnd = n => Math.round(n).toLocaleString("vi-VN");
+function gon(n){
+  if (n >= 1e9) return (n/1e9).toLocaleString("vi-VN",{maximumFractionDigits:2}) + " tỷ";
+  if (n >= 1e6) return (n/1e6).toLocaleString("vi-VN",{maximumFractionDigits:1}) + " triệu";
+  return vnd(n);
+}
+
+/* Số tiền vay tối đa khi biết khoản trả được mỗi tháng */
+function vayTheoThuNhap(traToiDa, laiThang, soThang, cach){
+  if (traToiDa <= 0) return 0;
+  if (cach === "giam") return traToiDa / (1/soThang + laiThang);   // tháng đầu nặng nhất
+  if (laiThang === 0) return traToiDa * soThang;
+  return traToiDa * (1 - Math.pow(1+laiThang, -soThang)) / laiThang;
+}
+
+function lichTra(goc, laiThang, soThang, cach){
+  const theoNam = []; let con = goc, tongLai = 0, thang1 = 0;
+  const deu = laiThang === 0 ? goc/soThang : goc*laiThang/(1-Math.pow(1+laiThang,-soThang));
+  for (let t=1; t<=soThang; t++){
+    const lai = con*laiThang;
+    const tg = cach === "giam" ? goc/soThang : deu - lai;
+    con = Math.max(0, con - tg); tongLai += lai;
+    if (t===1) thang1 = tg + lai;
+    const n = Math.ceil(t/12)-1;
+    theoNam[n] = theoNam[n] || {goc:0, lai:0, con:0};
+    theoNam[n].goc += tg; theoNam[n].lai += lai; theoNam[n].con = con;
+  }
+  return {theoNam, tongLai, thang1};
+}
+
+let tomTat = "";
+function tinh(){
+  const thuNhap = docSo("thuNhap"), chiTieu = docSo("chiTieu"), noCu = docSo("noCu"), taiSan = docSo("taiSan");
+  const laiNam = docSo("laiSuat"), nam = Math.max(1, Math.min(35, Math.round(docSo("thoiHan")) || 1));
+  const tyLeTra = docSo("tyLeTra")/100, tyLeTS = docSo("tyLeTS")/100, cach = $("cachTra").value;
+  const laiThang = laiNam/100/12, soThang = nam*12;
+
+  const traToiDa = Math.max(0, Math.min(thuNhap*tyLeTra - noCu, thuNhap - chiTieu - noCu));
+  const theoTN = vayTheoThuNhap(traToiDa, laiThang, soThang, cach);
+  const theoTS = taiSan * tyLeTS;
+  const vay = Math.floor(Math.min(theoTN, theoTS) / 1e6) * 1e6;   // làm tròn xuống triệu
+
+  $("vayDuoc").innerHTML = vnd(vay) + "<small>đồng</small>";
+  let viSao;
+  if (vay <= 0) viSao = "Thu nhập còn lại sau chi tiêu và nợ cũ chưa đủ để trả thêm khoản vay mới.";
+  else if (theoTS < theoTN) viSao = `Bị giới hạn bởi tài sản thế chấp: tối đa ${Math.round(tyLeTS*100)}% của ${gon(taiSan)}.`;
+  else viSao = `Bị giới hạn bởi thu nhập: mỗi tháng trả được tối đa khoảng ${gon(traToiDa)}.`;
+  $("viSao").textContent = viSao;
+
+  const l = lichTra(vay, laiThang, soThang, cach);
+  $("traThang").textContent = vay ? gon(l.thang1) : "0";
+  $("nhanThang1").textContent = cach === "giam" ? "Tháng đầu trả (giảm dần)" : "Mỗi tháng trả";
+  $("tongLai").textContent = vay ? gon(l.tongLai) : "0";
+  $("lich").innerHTML = l.theoNam.map((y,i)=>`<tr><td>${i+1}</td><td>${gon(y.goc)}</td><td>${gon(y.lai)}</td><td>${gon(y.con)}</td></tr>`).join("");
+
+  const tong = Math.max(thuNhap, 1), pc = v => Math.max(0, Math.min(100, v/tong*100)) + "%";
+  $("vChi").style.width = pc(chiTieu); $("vNo").style.width = pc(noCu); $("vTra").style.width = pc(vay ? l.thang1 : 0);
+
+  const cb = $("canhBao");
+  if (thuNhap && chiTieu + noCu >= thuNhap){ cb.style.display="block"; cb.textContent="Chi tiêu và nợ cũ đang bằng hoặc vượt thu nhập. Nên giảm chi tiêu hoặc trả bớt nợ cũ trước khi vay thêm."; }
+  else cb.style.display="none";
+
+  tomTat = `Chào ${CAU_HINH.ten}, em/anh/chị vừa tính thử khả năng vay:\n`
+    + `- Thu nhập: ${gon(thuNhap)}/tháng, chi tiêu: ${gon(chiTieu)}/tháng, nợ cũ: ${gon(noCu)}/tháng\n`
+    + `- Tài sản thế chấp: ${gon(taiSan)}\n`
+    + `- Muốn vay ${nam} năm, ước tính vay được khoảng ${gon(vay)}\n`
+    + `Nhờ tư vấn giúp hồ sơ cụ thể.`;
+}
+
+/* Tự thêm dấu chấm ngăn cách khi gõ số tiền + hiện chữ "15 triệu" bên dưới */
+["thuNhap","chiTieu","noCu","taiSan"].forEach(id=>{
+  const o = $(id), g = document.querySelector(`[data-cho="${id}"]`);
+  const capNhat = () => { const n = docSo(id); o.value = (n || o.value.trim()) ? vnd(n) : ""; g.textContent = n ? "= " + gon(n) + " đồng" : ""; };
+  o.addEventListener("input", () => { capNhat(); tinh(); });
+  capNhat();
+});
+["laiSuat","thoiHan","tyLeTra","tyLeTS","cachTra"].forEach(id => $(id).addEventListener("input", tinh));
+
+/* Liên hệ */
+$("tenCB").textContent = CAU_HINH.ten;
+$("chucDanh").textContent = CAU_HINH.chucDanh;
+$("chuCai").textContent = CAU_HINH.ten.trim().split(" ").pop()[0];
+$("nutGoi").href = "tel:" + CAU_HINH.dienThoai;
+$("nutZalo").addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText(tomTat); $("bao").textContent = "Đã chép kết quả. Mở Zalo xong, dán vào ô tin nhắn rồi bấm gửi."; }
+  catch(e){ $("bao").textContent = "Mở Zalo xong, anh chị chụp màn hình kết quả gửi giúp em."; }
+  window.open("https://zalo.me/" + CAU_HINH.dienThoai, "_blank");
+});
+
+tinh();
+</script>
+</body>
+</html>
